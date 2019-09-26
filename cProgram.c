@@ -5,23 +5,28 @@
 int printArray();
 bool swap();
 int minIndex();
+void selectionSort();
 
 int main() {
   printf("Hello World\n");
 
-  int a[10];
+  int a[] = {3, 2, 14, 6, 2, 5};
 
   int sizeA = sizeof(a)/sizeof(int);
-  for (size_t i = 0; i < sizeA; i++) { //potato fries
-    /* code */
-    a[i] = sizeA - i;
+  // for (size_t i = 0; i < sizeA; i++) { //potato fries
+  //   /* code */
+  //   a[i] = sizeA - i;
+  //
+  // }
 
-  }
 
   printArray(a, sizeA);
-  int ret = minIndex(a, sizeA);
-  printf("%d\n", ret);
 
+  int ret = minIndex(a, sizeA, 0);
+  printf("The min index is %d\n", ret);
+
+  selectionSort(a, sizeA);
+  printArray(a, sizeA);
   return 0;
 }
 
@@ -34,29 +39,35 @@ int printArray(int *array, int length) {
   return 1;
 }
 
-bool swap(int a, int b, int *arr)
+bool swap(int *a, int *b)
 {
-  int temp;
-  temp = arr[a];
-  arr[a] = arr[b];
-  arr[b] = temp;
+  int temp = *a;
+  *a = *b;
+  *b = temp;
   return true;
 }
 
-int minIndex(int *arr, int length)
+int minIndex(int arr[], int length, int start)
 {
-  int currMin = arr[0];
-  int retIndex;
+  int minIndex = start;
 
-  for(int i = 0; i < length; i ++)
+  for(int i = start + 1; i < length; i ++)
   {
-    int temp = arr[i];
-
-    if(temp < currMin)
+    if(arr[i] < arr[minIndex])
     {
-      retIndex = i;
+      minIndex = i;
     }
   }
 
-  return retIndex;
+  return minIndex;
+
+}
+
+void selectionSort(int array[], int length)
+{
+  for(int i = 0; i < length - 1; i ++)
+  {
+    int min = minIndex(array, length, i);
+    swap(&array[min], &array[i]);
+  }
 }
