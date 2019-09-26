@@ -11,7 +11,7 @@ int main() {
   int a[10];
 
   int sizeA = sizeof(a)/sizeof(int);
-  for (size_t i = 0; i < sizeA; i++) {
+  for (size_t i = 0; i < sizeA; i++) { //potato fries
     /* code */
     a[i] = 1; //random();
   }
@@ -30,6 +30,7 @@ int printArray(int *array, int length) {
   return 1;
 }
 
-bool swap() {
+bool swap()
+{
 
 }
