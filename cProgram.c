@@ -13,7 +13,11 @@ int main() {
   int sizeA = sizeof(a)/sizeof(int);
   for (size_t i = 0; i < sizeA; i++) { //potato fries
     /* code */
-    a[i] = 1; //random();
+    if(i % 2 == 0) {
+      a[i] = 0;
+    } else {
+      a[i] = rand() % 10 + 1;
+    }
   }
 
   printArray(a, sizeA);
