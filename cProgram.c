@@ -6,6 +6,7 @@ int printArray();
 bool swap();
 int minIndex();
 void selectionSort();
+int binarySearchIterative();
 
 int main() {
   printf("Hello World\n");
@@ -27,6 +28,9 @@ int main() {
 
   selectionSort(a, sizeA);
   printArray(a, sizeA);
+
+  int binVal = binarySearchIterative(a, 0, sizeA - 1, 14);
+  printf("%d\n", binVal);
   return 0;
 }
 
@@ -70,4 +74,27 @@ void selectionSort(int array[], int length)
     int min = minIndex(array, length, i);
     swap(&array[min], &array[i]);
   }
+}
+
+int binarySearchIterative(int array[], int leftMost, int rightMost, int value)
+{
+  while(leftMost <= rightMost)
+  {
+    int mid = (leftMost + rightMost) / 2;
+
+    if(array[mid] == value)
+    {
+      return mid;
+    }
+
+    if(array[mid] < value)
+    {
+      leftMost = mid + 1;
+    } else
+    {
+      rightMost = mid - 1;
+    }
+  }
+
+  return -1;
 }
