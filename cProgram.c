@@ -7,6 +7,7 @@ bool swap();
 int minIndex();
 void selectionSort();
 int binarySearchIterative();
+int binarySearchRecursive();
 
 int main() {
   printf("Hello World\n");
@@ -29,8 +30,11 @@ int main() {
   selectionSort(a, sizeA);
   printArray(a, sizeA);
 
-  int binVal = binarySearchIterative(a, 0, sizeA - 1, 14);
-  printf("%d\n", binVal);
+  int binVal = binarySearchIterative(a, 0, sizeA - 1, 5);
+  printf("Finding value 5 at index %d using iterative search\n", binVal);
+
+  int binVal2 = binarySearchRecursive(a, 0, sizeA - 1, 14);
+  printf("Finding value 14 at index %d using recursive search\n", binVal2);
   return 0;
 }
 
@@ -94,6 +98,28 @@ int binarySearchIterative(int array[], int leftMost, int rightMost, int value)
     {
       rightMost = mid - 1;
     }
+  }
+
+  return -1;
+}
+
+int binarySearchRecursive(int array[], int leftMost, int rightMost, int value)
+{
+  while(leftMost <= rightMost)
+  {
+    int mid = (leftMost + rightMost) / 2;
+
+    if(array[mid] == value)
+    {
+      return mid;
+    }
+
+    if(array[mid] > value)
+    {
+      return binarySearchRecursive(array, 1, mid - 1, value);
+    }
+
+    return binarySearchRecursive(array, mid + 1, rightMost, value);
   }
 
   return -1;
