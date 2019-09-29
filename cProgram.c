@@ -8,11 +8,13 @@ int minIndex();
 void selectionSort();
 int binarySearchIterative();
 int binarySearchRecursive();
+void reverseFill();
+
 
 int main() {
   printf("Hello World\n");
 
-  int a[] = {3, 2, 14, 6, 2, 5};
+  int a[] = {4, 3, 2, 1, 6};
 
   int sizeA = sizeof(a)/sizeof(int);
   // for (size_t i = 0; i < sizeA; i++) { //potato fries
@@ -35,6 +37,9 @@ int main() {
 
   int binVal2 = binarySearchRecursive(a, 0, sizeA - 1, 14);
   printf("Finding value 14 at index %d using recursive search\n", binVal2);
+
+  reverseFill(a, sizeA);
+  printArray(a, sizeA);
   return 0;
 }
 
@@ -123,4 +128,13 @@ int binarySearchRecursive(int array[], int leftMost, int rightMost, int value)
   }
 
   return -1;
+}
+
+void reverseFill(int array[], int arrLength)
+{
+  //int index = 0;
+  for(int i = 0; i < arrLength; i ++)
+  {
+    array[i] = arrLength - i;
+  }
 }
