@@ -12,11 +12,27 @@ void reverseFill();
 
 
 int main() {
-  printf("Hello World\n");
+  //printf("Hello World\n");
 
-  int a[] = {4, 3, 2, 1, 6};
+  int a[9];
+
 
   int sizeA = sizeof(a)/sizeof(int);
+  reverseFill(a,sizeA); //fill an array with reverse order
+  printArray(a, sizeA);
+  printf("\n");
+  selectionSort(a, sizeA); //selection sort on array
+  printArray(a, sizeA);
+
+  int iterative = binarySearchIterative(a, 0, sizeA - 1, 6);
+  printf("%d\n", iterative);
+
+  int recursive = binarySearchRecursive(a, 0, sizeA - 1, 6);
+  printf("%d\n", recursive);
+
+  int difference = iterative - recursive; //should be zero
+  printf("%d\n", difference);
+
   // for (size_t i = 0; i < sizeA; i++) { //potato fries
   //   /* code */
   //   a[i] = sizeA - i;
@@ -24,22 +40,22 @@ int main() {
   // }
 
 
-  printArray(a, sizeA);
-
-  int ret = minIndex(a, sizeA, 0);
-  printf("The min index is %d\n", ret);
-
-  selectionSort(a, sizeA);
-  printArray(a, sizeA);
-
-  int binVal = binarySearchIterative(a, 0, sizeA - 1, 5);
-  printf("Finding value 5 at index %d using iterative search\n", binVal);
-
-  int binVal2 = binarySearchRecursive(a, 0, sizeA - 1, 14);
-  printf("Finding value 14 at index %d using recursive search\n", binVal2);
-
-  reverseFill(a, sizeA);
-  printArray(a, sizeA);
+  // printArray(a, sizeA);
+  //
+  // int ret = minIndex(a, sizeA, 0);
+  // printf("The min index is %d\n", ret);
+  //
+  // selectionSort(a, sizeA);
+  // printArray(a, sizeA);
+  //
+  // int binVal = binarySearchIterative(a, 0, sizeA - 1, 5);
+  // printf("Finding value 5 at index %d using iterative search\n", binVal);
+  //
+  // int binVal2 = binarySearchRecursive(a, 0, sizeA - 1, 14);
+  // printf("Finding value 14 at index %d using recursive search\n", binVal2);
+  //
+  // reverseFill(a, sizeA);
+  // printArray(a, sizeA);
   return 0;
 }
 
