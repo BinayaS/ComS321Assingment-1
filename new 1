@@ -1,1 +1,43 @@
+ADDI X0, X0, #97
+LSL X0, X0, #8
+ADDI X0, X0, #98
+LSL X0, X0, #8
+ADDI X0, X0, #99
+LSL X0, X0, #8
+ADDI X0, X0, #100
+LSL X0, X0, #8
+ADDI X0, X0, #101
+LSL X0, X0, #8
+ADDI X0, X0, #102
+LSL X0, X0, #8
+ADDI X0, X0, #103
+LSL X0, X0, #8
+ADDI X0, X0, #104
+
+ADDI X1, X1, #65
+LSL X1, X1, #8
+ADDI X1, X1, #66
+LSL X1, X1, #8
+ADDI X1, X1, #67
+LSL X1, X1, #8
+ADDI X1, X1, #68
+LSL X1, X1, #8
+ADDI X1, X1, #69
+LSL X1, X1, #8
+ADDI X1, X1, #70
+LSL X1, X1, #8
+ADDI X1, X1, #71
+LSL X1, X1, #8
+ADDI X1, X1, #72
+
+SUBI SP, SP, #16 //Subtract 8 bits from Stack Pointer
+
+STUR X0, [SP, #0] //Store to Stack Pointer at address (SP + #0) X0
+STUR X1, [SP, #8] //Store to Stack Pointer at address (SP + #16) X1
+
+STUR X0, [XZR, #0] //Store to main memory at address (0 + #0) X0
+STUR X1, [XZR, #8] //Store to main memory at address (0 + #0) X0
+
+ADDI SP, SP, #16
+
 DUMP
