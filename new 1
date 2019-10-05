@@ -68,6 +68,31 @@ Swap: //Parameters(X1 Int0, X2 Int1)
 	DUMP
 	BR X11
 
+MinIndex: //Parameters(XZR array, X1 //integer length, X0 //integer start)
+
+SUBI SP, SP, #8 //makes space on the stack
+STUR LR, [SP, #0] //stores link register
+
+LDUR X9, [X0, #0] //loads start value
+ADDI X9, X9, #1  //adds 1 to start value
+
+for_loop: 
+	LDUR X10, [X9, #0] //index i 
+	LDUR X11, [X0, #0] //minIndex 
+	CMP X10, X11
+	B.LT less_than
+	ADDI X10, X10, #1
+	CMP X10, X0 
+	B.LT for_loop
+
+less_than:
+	LDUR X11, [X10, #0]
+	B for_loop
+
+LDUR X11, [SP, #0]
+ADDI SP, SP, #8
+DUMP
+
 mainEnd:
 
 
