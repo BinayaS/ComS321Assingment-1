@@ -14,41 +14,38 @@ ArrayBuilder:
 
 	SUBI SP, SP, #8
 	STUR LR, [SP, #0]
-	
-	ADDI X0, X0, #16
-	
-	MOVZ X1, #0, LSL #0
-	
-	MOVZ X2, #0, LSL #0
-	
-	MOVZ X18, #0, LSL #0
-	MOVZ X19, #0, LSL #0
-	
-	ADDI X18, X18, #122
-	ADDI X19, X19, #80
-	
-	ArrayBuilderLoop:
-	
-		SUBI X0, X0, #1
-		
-		SUBI X18, X18, #1
-		ADD X1, X1, X18
-		LSL X1, X1, #8
-		
-		SUBI X19, X19, #1
-		ADD X2, X2, X19
-		LSL X2, X2, #8
 
-		CBZ X0, ArrayBuilderEnd
-		B ArrayBuilderLoop
+	//For now this function is hard coded to fill 12 arrays with the alphabet starting at address 0
+	ADDI X0, X0, #65
+	ADDI X1, X1, #66
+	ADDI X2, X2, #67
+	ADDI X3, X3, #68
+	ADDI X4, X4, #69
+	ADDI X5, X5, #70
+	ADDI X6, X6, #71
+	ADDI X7, X7, #72
+	ADDI X8, X8, #73
+	ADDI X9, X9, #74
+	ADDI X10, X10, #75
+	ADDI X11, X11, #76
 	
-	ArrayBuilderEnd:
-		STUR X1, [XZR, #8]
-		STUR X2, [XZR, #0]
-		LDUR X17, [SP, #0]
-		ADDI SP, SP, #8
-		DUMP
-		BR X17
+	STUR X0, [XZR, #0]
+	STUR X1, [XZR, #8]
+	STUR X2, [XZR, #16]
+	STUR X3, [XZR, #24]
+	STUR X4, [XZR, #32]
+	STUR X5, [XZR, #40]
+	STUR X6, [XZR, #48]
+	STUR X7, [XZR, #56]
+	STUR X8, [XZR, #64]
+	STUR X9, [XZR, #72]
+	STUR X10, [XZR, #80]
+	STUR X11, [XZR, #88]
+	
+	LDUR X9, [SP, #0]
+	ADDI SP, SP, #8
+	DUMP
+	BR X9
 
 Swap: //Parameters(X1 Int0, X2 Int1)
 	
@@ -63,10 +60,10 @@ Swap: //Parameters(X1 Int0, X2 Int1)
 	STUR X9, [X2, #0]
 	
 	//End
-	LDUR X11, [SP, #0]
+	LDUR X9, [SP, #0]
 	ADDI SP, SP, #8
 	DUMP
-	BR X11
+	BR X9
 
 MinIndex: //Parameters(XZR array, X1 //integer length, X0 //integer start)
 
