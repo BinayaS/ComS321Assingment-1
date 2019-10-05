@@ -1,43 +1,73 @@
-ADDI X0, X0, #97
-LSL X0, X0, #8
-ADDI X0, X0, #98
-LSL X0, X0, #8
-ADDI X0, X0, #99
-LSL X0, X0, #8
-ADDI X0, X0, #100
-LSL X0, X0, #8
-ADDI X0, X0, #101
-LSL X0, X0, #8
-ADDI X0, X0, #102
-LSL X0, X0, #8
-ADDI X0, X0, #103
-LSL X0, X0, #8
-ADDI X0, X0, #104
 
-ADDI X1, X1, #65
-LSL X1, X1, #8
-ADDI X1, X1, #66
-LSL X1, X1, #8
-ADDI X1, X1, #67
-LSL X1, X1, #8
-ADDI X1, X1, #68
-LSL X1, X1, #8
-ADDI X1, X1, #69
-LSL X1, X1, #8
-ADDI X1, X1, #70
-LSL X1, X1, #8
-ADDI X1, X1, #71
-LSL X1, X1, #8
-ADDI X1, X1, #72
+main:
 
-SUBI SP, SP, #16 //Subtract 8 bits from Stack Pointer
+BL ArrayBuilder
 
-STUR X0, [SP, #0] //Store to Stack Pointer at address (SP + #0) X0
-STUR X1, [SP, #8] //Store to Stack Pointer at address (SP + #16) X1
+MOVZ X1, #0, LSL #0
+MOVZ X2, #8, LSL #0
 
-STUR X0, [XZR, #0] //Store to main memory at address (0 + #0) X0
-STUR X1, [XZR, #8] //Store to main memory at address (0 + #0) X0
+BL Swap
 
-ADDI SP, SP, #16
+B mainEnd
 
-DUMP
+ArrayBuilder:
+
+	SUBI SP, SP, #8
+	STUR LR, [SP, #0]
+	
+	ADDI X0, X0, #16
+	
+	MOVZ X1, #0, LSL #0
+	
+	MOVZ X2, #0, LSL #0
+	
+	MOVZ X18, #0, LSL #0
+	MOVZ X19, #0, LSL #0
+	
+	ADDI X18, X18, #122
+	ADDI X19, X19, #80
+	
+	ArrayBuilderLoop:
+	
+		SUBI X0, X0, #1
+		
+		SUBI X18, X18, #1
+		ADD X1, X1, X18
+		LSL X1, X1, #8
+		
+		SUBI X19, X19, #1
+		ADD X2, X2, X19
+		LSL X2, X2, #8
+
+		CBZ X0, ArrayBuilderEnd
+		B ArrayBuilderLoop
+	
+	ArrayBuilderEnd:
+		STUR X1, [XZR, #8]
+		STUR X2, [XZR, #0]
+		LDUR X17, [SP, #0]
+		ADDI SP, SP, #8
+		DUMP
+		BR X17
+
+Swap: //Parameters(X1 Int0, X2 Int1)
+	
+	//Start
+	SUBI SP, SP, #8		//Make space on stack
+	STUR LR, [SP, #0]	//Store link register
+	
+	//Body
+	LDUR X9, [X1, #0]
+	LDUR X10, [X2, #0]
+	STUR X10, [X1, #0]
+	STUR X9, [X2, #0]
+	
+	//End
+	LDUR X11, [SP, #0]
+	ADDI SP, SP, #8
+	DUMP
+	BR X11
+
+mainEnd:
+
+
