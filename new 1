@@ -21,11 +21,10 @@ BL Swap
 
 DUMP
 
+MOVZ X1, #88, LSL #0
+BL SelectionSort
 
-
-//MOVZ X0, #0, LSL #0
-//MOVZ X1, #88, LSL #0
-//BL MinIndex
+DUMP
 
 B mainEnd
 
@@ -95,7 +94,7 @@ MinIndex: //Parameters (X0 start, X1 array length)
 
 	ADD X10, X10, X0
 	ADDI X10, X10, #8 //i = start + 1
-	ADD X11, X11, X0 //minIndex
+	ADD X11, X11, X0  //minIndex
 	
 	MinIndex_for_loop:
 	
@@ -122,22 +121,57 @@ MinIndex: //Parameters (X0 start, X1 array length)
 	MinIndex_end:
 		LDUR X9, [SP, #0]
 		ADDI SP, SP, #8
-		//LDUR X11, [X11, #0]
+		MOVZ LR, #0, LSL #0
+		ADD LR, LR, X11
 		//DUMP
-		//PRNT X11
 		BR X9
 
-SelectionSort:
-	SUBI SP, SP, #8 //makes space on the stack
+SelectionSort: //Parameters (X1 arrayLength)
+	SUBI SP, SP, #24 //makes space on the stack
 	STUR LR, [SP, #0] //stores link register
+	STUR X1, [SP, #8] //stores arrayLength
+	STUR XZR, [SP, #16] //stores swapIndex
 	
+	//init. vars
+	MOVZ X9, #0, LSL #0		//swapIndex
 	
+	//stores into stack
+	STUR X9, [SP, #16]
 	
+	SelectionSortWhile:
 	
+		LDUR X1, [SP, #8]
+	
+		//if (swapIndex >= arrayLength) end
+		SUBS X17, X9, X1
+		B.GE SelectionSortEnd
+		
+		//startIndex = currentIndex
+		MOVZ X0, #0, LSL #0
+		ADD X0, X0, X9
+		
+		//Load in the arrayLength
+		LDUR X1, [SP, #8]
+		
+		//find min and swap it with the swapIndex
+		BL MinIndex //(X0 startIndex, X1 arrayLength)
+		
+		MOVZ X1, #0, LSL #0
+		ADD X1, X1, LR 		//minIndex
+		LDUR X2, [SP, #16]  //swapIndex
+		
+		BL Swap //(X1, X2)
+		
+		//swapIndex += 1
+		LDUR X9, [SP, #16]
+		ADDI X9, X9, #8
+		STUR X9, [SP, #16]
+		
+		B SelectionSortWhile
 	
 	SelectionSortEnd:
 		LDUR X9, [SP, #0]
-		ADDI SP, SP, #8
+		ADDI SP, SP, #24
 		BR X9
 
 mainEnd:
