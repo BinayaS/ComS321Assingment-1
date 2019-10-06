@@ -4,9 +4,28 @@ main:
 BL ArrayBuilder
 
 MOVZ X1, #0, LSL #0
-MOVZ X2, #8, LSL #0
-
+MOVZ X2, #40, LSL #0
 BL Swap
+
+MOVZ X1, #8, LSL #0
+MOVZ X2, #24, LSL #0
+BL Swap
+
+MOVZ X1, #16, LSL #0
+MOVZ X2, #80, LSL #0
+BL Swap
+
+MOVZ X1, #48, LSL #0
+MOVZ X2, #88, LSL #0
+BL Swap
+
+DUMP
+
+
+
+//MOVZ X0, #0, LSL #0
+//MOVZ X1, #88, LSL #0
+//BL MinIndex
 
 B mainEnd
 
@@ -44,7 +63,7 @@ ArrayBuilder:
 	
 	LDUR X9, [SP, #0]
 	ADDI SP, SP, #8
-	DUMP
+	//DUMP
 	BR X9
 
 Swap: //Parameters(X1 Int0, X2 Int1)
@@ -62,33 +81,63 @@ Swap: //Parameters(X1 Int0, X2 Int1)
 	//End
 	LDUR X9, [SP, #0]
 	ADDI SP, SP, #8
-	DUMP
+	//DUMP
 	BR X9
 
-MinIndex: //Parameters(XZR array, X1 //integer length, X0 //integer start)
+MinIndex: //Parameters (X0 start, X1 array length)
 
-SUBI SP, SP, #8 //makes space on the stack
-STUR LR, [SP, #0] //stores link register
+	SUBI SP, SP, #8 //makes space on the stack
+	STUR LR, [SP, #0] //stores link register
 
-LDUR X9, [X0, #0] //loads start value
-ADDI X9, X9, #1  //adds 1 to start value
+	MOVZ X10, #0, LSL #0
+	MOVZ X11, #0, LSL #0
 
-for_loop: 
-	LDUR X10, [X9, #0] //index i 
-	LDUR X11, [X0, #0] //minIndex 
-	CMP X10, X11
-	B.LT less_than
-	ADDI X10, X10, #1
-	CMP X10, X0 
-	B.LT for_loop
+	ADD X10, X10, X0
+	ADDI X10, X10, #8 //i = start + 1
+	ADD X11, X11, X0 //minIndex
+	
+	MinIndex_for_loop:
+	
+		//if (i > array length) exit
+		SUBS X14, X10, X1
+		B.GT MinIndex_end
+		
+		//if i < minIndex
+		LDUR X12, [X10, #0] //array[i]
+		LDUR X13, [X11, #0] //array[minIndex]
+		SUBS X14, X13, X12
+		B.GT MinIndex_less_than
+		
+		B Skip
+		
+		MinIndex_less_than:
+			MOVZ X11, #0, LSL #0
+			ADD X11, X11, X10
+			
+		Skip:
+			ADDI X10, X10, #8
+			B MinIndex_for_loop
 
-less_than:
-	LDUR X11, [X10, #0]
-	B for_loop
+	MinIndex_end:
+		LDUR X9, [SP, #0]
+		ADDI SP, SP, #8
+		//LDUR X11, [X11, #0]
+		//DUMP
+		//PRNT X11
+		BR X9
 
-LDUR X11, [SP, #0]
-ADDI SP, SP, #8
-DUMP
+SelectionSort:
+	SUBI SP, SP, #8 //makes space on the stack
+	STUR LR, [SP, #0] //stores link register
+	
+	
+	
+	
+	
+	SelectionSortEnd:
+		LDUR X9, [SP, #0]
+		ADDI SP, SP, #8
+		BR X9
 
 mainEnd:
 
