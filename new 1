@@ -1,14 +1,20 @@
 main:
 
+MOVZ X0, #25, LSL #0
 BL ArrayBuilder
 
 MOVZ X1, #0, LSL #0
+<<<<<<< HEAD
 MOVZ X2, #40, LSL #0
+=======
+MOVZ X2, #48, LSL #0
+>>>>>>> d1dcbe22bf1b5a0f162046d8bb35bfe9c88badaf
 BL Swap
 
 MOVZ X1, #8, LSL #0
 MOVZ X2, #24, LSL #0
 BL Swap
+<<<<<<< HEAD
 
 MOVZ X1, #16, LSL #0
 MOVZ X2, #80, LSL #0
@@ -26,42 +32,52 @@ BL SelectionSort
 MOVZ X1, #43, LSL #0
 BL BinarySearchIterative
 
+=======
+
+MOVZ X1, #16, LSL #0
+MOVZ X2, #80, LSL #0
+BL Swap
+
+MOVZ X1, #48, LSL #0
+MOVZ X2, #192, LSL #0
+BL Swap
+
+MOVZ X1, #48, LSL #0
+MOVZ X2, #88, LSL #0
+BL Swap
+
+DUMP
+
+MOVZ X1, #192, LSL #0
+BL SelectionSort
+
+>>>>>>> d1dcbe22bf1b5a0f162046d8bb35bfe9c88badaf
 DUMP
 
 B mainEnd
 
-ArrayBuilder:
+ArrayBuilder: //Parameters (X0 array_length)
 
 	SUBI SP, SP, #8
 	STUR LR, [SP, #0]
-
-	//For now this function is hard coded to fill 12 arrays with the alphabet starting at address 0
-	ADDI X0, X0, #65
-	ADDI X1, X1, #66
-	ADDI X2, X2, #67
-	ADDI X3, X3, #68
-	ADDI X4, X4, #69
-	ADDI X5, X5, #70
-	ADDI X6, X6, #71
-	ADDI X7, X7, #72
-	ADDI X8, X8, #73
-	ADDI X9, X9, #74
-	ADDI X10, X10, #75
-	ADDI X11, X11, #76
 	
-	STUR X0, [XZR, #0]
-	STUR X1, [XZR, #8]
-	STUR X2, [XZR, #16]
-	STUR X3, [XZR, #24]
-	STUR X4, [XZR, #32]
-	STUR X5, [XZR, #40]
-	STUR X6, [XZR, #48]
-	STUR X7, [XZR, #56]
-	STUR X8, [XZR, #64]
-	STUR X9, [XZR, #72]
-	STUR X10, [XZR, #80]
-	STUR X11, [XZR, #88]
+	MOVZ X10, #0, LSL #0
+	MOVZ X11, #0, LSL #0
 	
+	ArrayBuilderForLoop:
+		
+		SUBS X17, X11, X0
+		B.GT ArrayBuilderEnd
+		
+		ADDI X9, X11, #65
+		STUR X9, [X10, #0]
+		
+		ADDI X11, X11, #1
+		ADDI X10, X10, #8
+		
+		B ArrayBuilderForLoop
+	
+	ArrayBuilderEnd:
 	LDUR X9, [SP, #0]
 	ADDI SP, SP, #8
 	//DUMP
@@ -87,6 +103,7 @@ Swap: //Parameters(X1 Int0, X2 Int1)
 
 MinIndex: //Parameters (X0 start, X1 array length)
 //Note: this function returns the index that contains the smallest value
+<<<<<<< HEAD
 
 	SUBI SP, SP, #8 //makes space on the stack
 	STUR LR, [SP, #0] //stores link register
@@ -218,6 +235,96 @@ BinarySearchIterative: //Parameters(array, X1 left, X2 right, X3 targetValue)
 		
 		SUBI X2, X10, #8 //right = mid - 1
 		B iterative_loop
+=======
+
+	SUBI SP, SP, #8 //makes space on the stack
+	STUR LR, [SP, #0] //stores link register
+
+	MOVZ X10, #0, LSL #0
+	MOVZ X11, #0, LSL #0
+
+	ADD X10, X10, X0
+	ADDI X10, X10, #8 //i = start + 1
+	ADD X11, X11, X0  //minIndex
+	
+	MinIndex_for_loop:
+	
+		//if (i > array length) exit
+		SUBS X14, X10, X1
+		B.GT MinIndex_end
+		
+		//if i < minIndex
+		LDUR X12, [X10, #0] //array[i]
+		LDUR X13, [X11, #0] //array[minIndex]
+		SUBS X14, X13, X12
+		B.GT MinIndex_less_than
+		
+		B Skip
+		
+		MinIndex_less_than:
+			MOVZ X11, #0, LSL #0
+			ADD X11, X11, X10
+			
+		Skip:
+			ADDI X10, X10, #8
+			B MinIndex_for_loop
+
+	MinIndex_end:
+		LDUR X9, [SP, #0]
+		ADDI SP, SP, #8
+		MOVZ LR, #0, LSL #0
+		ADD LR, LR, X11
+		//DUMP
+		BR X9
+
+SelectionSort: //Parameters (X1 arrayLength)
+	SUBI SP, SP, #24 //makes space on the stack
+	STUR LR, [SP, #0] //stores link register
+	STUR X1, [SP, #8] //stores arrayLength
+	STUR XZR, [SP, #16] //stores swapIndex
+	
+	//init. vars
+	MOVZ X9, #0, LSL #0		//swapIndex
+	
+	//stores into stack
+	STUR X9, [SP, #16]
+	
+	SelectionSortWhile:
+	
+		LDUR X1, [SP, #8]
+	
+		//if (swapIndex >= arrayLength) end
+		SUBS X17, X9, X1
+		B.GE SelectionSortEnd
+		
+		//startIndex = currentIndex
+		MOVZ X0, #0, LSL #0
+		ADD X0, X0, X9
+		
+		//Load in the arrayLength
+		LDUR X1, [SP, #8]
+		
+		//find min and swap it with the swapIndex
+		BL MinIndex //(X0 startIndex, X1 arrayLength)
+		
+		MOVZ X1, #0, LSL #0
+		ADD X1, X1, LR 		//minIndex
+		LDUR X2, [SP, #16]  //swapIndex
+		
+		BL Swap //(X1, X2)
+		
+		//swapIndex += 1
+		LDUR X9, [SP, #16]
+		ADDI X9, X9, #8
+		STUR X9, [SP, #16]
+		
+		B SelectionSortWhile
+	
+	SelectionSortEnd:
+		LDUR X9, [SP, #0]
+		ADDI SP, SP, #24
+		BR X9
+>>>>>>> d1dcbe22bf1b5a0f162046d8bb35bfe9c88badaf
 
 	end_iterative: 
 
