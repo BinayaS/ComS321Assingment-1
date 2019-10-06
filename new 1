@@ -85,6 +85,7 @@ Swap: //Parameters(X1 Int0, X2 Int1)
 	BR X9
 
 MinIndex: //Parameters (X0 start, X1 array length)
+//Note: this function returns the index that contains the smallest value
 
 	SUBI SP, SP, #8 //makes space on the stack
 	STUR LR, [SP, #0] //stores link register
