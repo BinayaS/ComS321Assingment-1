@@ -1,10 +1,11 @@
 
 main:
 
+MOVZ X0, #25, LSL #0
 BL ArrayBuilder
 
 MOVZ X1, #0, LSL #0
-MOVZ X2, #40, LSL #0
+MOVZ X2, #48, LSL #0
 BL Swap
 
 MOVZ X1, #8, LSL #0
@@ -16,50 +17,44 @@ MOVZ X2, #80, LSL #0
 BL Swap
 
 MOVZ X1, #48, LSL #0
+MOVZ X2, #192, LSL #0
+BL Swap
+
+MOVZ X1, #48, LSL #0
 MOVZ X2, #88, LSL #0
 BL Swap
 
 DUMP
 
-MOVZ X1, #88, LSL #0
+MOVZ X1, #192, LSL #0
 BL SelectionSort
 
 DUMP
 
 B mainEnd
 
-ArrayBuilder:
+ArrayBuilder: //Parameters (X0 array_length)
 
 	SUBI SP, SP, #8
 	STUR LR, [SP, #0]
-
-	//For now this function is hard coded to fill 12 arrays with the alphabet starting at address 0
-	ADDI X0, X0, #65
-	ADDI X1, X1, #66
-	ADDI X2, X2, #67
-	ADDI X3, X3, #68
-	ADDI X4, X4, #69
-	ADDI X5, X5, #70
-	ADDI X6, X6, #71
-	ADDI X7, X7, #72
-	ADDI X8, X8, #73
-	ADDI X9, X9, #74
-	ADDI X10, X10, #75
-	ADDI X11, X11, #76
 	
-	STUR X0, [XZR, #0]
-	STUR X1, [XZR, #8]
-	STUR X2, [XZR, #16]
-	STUR X3, [XZR, #24]
-	STUR X4, [XZR, #32]
-	STUR X5, [XZR, #40]
-	STUR X6, [XZR, #48]
-	STUR X7, [XZR, #56]
-	STUR X8, [XZR, #64]
-	STUR X9, [XZR, #72]
-	STUR X10, [XZR, #80]
-	STUR X11, [XZR, #88]
+	MOVZ X10, #0, LSL #0
+	MOVZ X11, #0, LSL #0
 	
+	ArrayBuilderForLoop:
+		
+		SUBS X17, X11, X0
+		B.GT ArrayBuilderEnd
+		
+		ADDI X9, X11, #65
+		STUR X9, [X10, #0]
+		
+		ADDI X11, X11, #1
+		ADDI X10, X10, #8
+		
+		B ArrayBuilderForLoop
+	
+	ArrayBuilderEnd:
 	LDUR X9, [SP, #0]
 	ADDI SP, SP, #8
 	//DUMP
