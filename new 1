@@ -24,16 +24,23 @@ MOVZ X1, #48, LSL #0
 MOVZ X2, #88, LSL #0
 BL Swap
 
-DUMP
-
 MOVZ X1, #192, LSL #0
 BL SelectionSort
-
-DUMP
 
 MOVZ X1, #90, LSL #0
 MOVZ X2, #200, LSL #0
 BL BinarySearchIterative
+
+DUMP
+
+MOVZ X0, #0, LSL #0
+MOVZ X1, #200, LSL #0
+MOVZ X2, #200, LSL #0
+MOVZ X3, #90, LSL #0
+
+MOVZ X12, #8, LSL #0
+UDIV X1, X1, X12
+BL BinarySearchRecursive
 
 DUMP
 
@@ -240,16 +247,71 @@ BinarySearchIterative: //Parameters(X2 arrayLength, X1 targetValue)
 		ADDI SP, SP, #8
 		BR X12
 		
-BinarySearchRecursive: //Parameters (X0 left, X1 right, X2 target)
+BinarySearchRecursive: //Parameters (X0 left, X1 right, X2 arrayLength, X3 targetValue)
+
+	//Note: Returns the index of the target value 
 
 	SUBI SP, SP, #8 //makes space on the stack
 	STUR LR, [SP, #0] //stores link register
-
+	
 	MOVZ X9, #0, LSL #0 	//left
 	MOVZ X10, #0, LSL #0 	//right
-	MOVZ X11, #0, LSL #0 	//mid
-
+	MOVZ X11, #0, LSL #0 	//mid 
 	
+	ADD X9, X9, X0			//using left parameter
+	ADD X10, X10, X1		//using right parameter
+	
+	SUBS X17, X9, X10	//comparing left and right
+	B.GT BinarySearchRecursiveBadEnd
+	
+	SUB X11, X10, X9	//right - left
+	MOVZ X12, #2, LSL #0//X12 = 2
+	UDIV X11, X11, X12	//mid = mid / 2
+	ADD X11, X11, X9	//mid + left
+	
+	MOVZ X14, #0, LSL #0
+	ADD X14, X14, X11	
+	LSL X14, X14, #3	//multiply mid by 8 to get the 8bit representation
+	LDUR X13, [X14, #0]	//array[mid]
+
+	SUBS X17, X3, X13	//comparing targetValue and array[mid]
+
+	PRNT X13
+	PRNT X3
+	PRNT X11
+
+	B.EQ BinarySearchRecursiveGoodEnd
+
+	B.LT BinarySearchRecursiveChangeRight
+	
+	B BinarySearchRecursiveChangeLeft
+		
+	BinarySearchRecursiveChangeLeft:
+		MOVZ X0, #0, LSL #0
+		ADD X0, X0, X11
+		ADDI X0, X0, #1
+		BL BinarySearchRecursive
+		B BinarySearchRecursiveGoodEnd
+		
+	BinarySearchRecursiveChangeRight:
+		MOVZ X1, #0, LSL #0
+		ADD X1, X1, X11
+		SUBI X1, X1, #1
+		BL BinarySearchRecursive
+		B BinarySearchRecursiveGoodEnd
+		
+	BinarySearchRecursiveGoodEnd:
+		MOVZ LR, #0, LSL #0
+		ADD LR, LR, X11
+		LDUR X12, [SP, #0]
+		ADDI SP, SP, #8
+		BR X12
+		
+	BinarySearchRecursiveBadEnd:
+		MOVZ LR, #420, LSL #0	//adds random value to indicate target was not found
+		LDUR X12, [SP, #0]
+		ADDI SP, SP, #8
+		BR X12
 
 mainEnd:
 
