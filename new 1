@@ -1,28 +1,49 @@
 
+//---- Main Start ----
 main:
 
-MOVZ X0, #26, LSL #0
-BL ArrayBuilderReverse
+//Setup the "array" in reverse order starting from the number 90 (Z in ASCII)
+//Note: the "array" is stored in main memory starting from offset 0
 
-DUMP
+	MOVZ X0, #26, LSL #0
+	BL ArrayBuilderReverse
 
-MOVZ X1, #200, LSL #0
-BL SelectionSort
+//Sort the array in ascending order
 
-MOVZ X1, #90, LSL #0
-MOVZ X2, #200, LSL #0
-BL BinarySearchIterative
+	MOVZ X1, #200, LSL #0
+	BL SelectionSort
 
-DUMP
+//Search for the ASCII letter O
 
-MOVZ X0, #200, LSL #0
-MOVZ X1, #90, LSL #0
-BL BinarySearchRecursiveSetup
+	MOVZ X1, #79, LSL #0
+	MOVZ X2, #200, LSL #0
+	BL BinarySearchIterative
 
-DUMP
+//Store our output into unused register X22
 
-B mainEnd
+	MOVZ X22, #0, LSL #0
+	ADD X22, X22, LR
 
+//Search for the ASCII letter O
+
+	MOVZ X0, #200, LSL #0
+	MOVZ X1, #79, LSL #0
+	BL BinarySearchRecursiveSetup
+
+//Subtract our output from register X22
+
+	SUB X22, X22, LR
+	
+//Store the outcome of the subtraction into main memory at offset 0
+
+	STUR X22, [XZR, #0]
+
+//Note: The start of our "array" is replaced by the final output value hence there being 0 instead of the letter A
+
+	B mainEnd
+//---- Main End ----
+
+//---- Functions Start ----
 ArrayBuilder: //Parameters (X0 array_length)
 
 	SUBI SP, SP, #8
@@ -222,9 +243,9 @@ BinarySearchIterative: //Parameters(X2 arrayLength, X1 targetValue)
 
 		SUBS X17, X1, X13	//comparing targetValue and array[mid]
 
-		PRNT X13
-		PRNT X1
-		PRNT X11
+		//PRNT X13
+		//PRNT X1
+		//PRNT X11
 
 		B.EQ GoodEnd
 
@@ -336,7 +357,9 @@ BinarySearchRecursiveSetup: //Parameters(X0 arrayLength, X1 targetValue)
 	LDUR X12, [SP, #0]
 	ADDI SP, SP, #8
 	BR X12
+//---- Functions End ----
 
+//---- Exit Program ----
 mainEnd:
-
+DUMP
 
