@@ -31,6 +31,12 @@ BL SelectionSort
 
 DUMP
 
+MOVZ X1, #68, LSL #0
+MOVZ X2, #200, LSL #0
+BL BinarySearchIterative
+
+DUMP
+
 B mainEnd
 
 ArrayBuilder: //Parameters (X0 array_length)
@@ -169,57 +175,67 @@ SelectionSort: //Parameters (X1 arrayLength)
 		ADDI SP, SP, #24
 		BR X9
 
-BinarySearchIterative: //Parameters(array, X1 left, X2 right, X3 targetValue)
+BinarySearchIterative: //Parameters(X2 arrayLength, X1 targetValue)
 //Note: Returns the index of the target value 
 
 	SUBI SP, SP, #8 //makes space on the stack
 	STUR LR, [SP, #0] //stores link register
 
-	iterative_loop: 
-		
-		//if left > right, we exit
-		SUBS X14, X1, X2 
-		B.GT end_iterative //exits 
-
-		MOVZ X10, #0, LSL #0 //initializing X10 = 0, represents mid value
-		ADD X10, X1, X2 //mid = left + right 
-		MOVZ X17, #2, LSL #0 //X17 = 2, gives a register with value 2[?]
-		UDIV X10, X10, X17 //X10 = X10 / 2 [MID]
-		LDUR X11, [X10, #0] //array[mid]
-
-		SUBS X14, X11, X3 //if array[mid] == targetValue
-		B.EQ result_iterative //has to return mid value
-		B.LT lessThan_iterative //am i even allowed to do this???? 
-		B.GT greaterThan_iterative 
-		
-		//SUBS X14, X11, X3 
-
-	result_iterative: //SHOULD return mid value
-
-		LDUR X9, [SP, #0]
-		ADDI SP, SP, #8
-		MOVZ LR, #0, LSL #0
-		ADD LR, LR, X10
-		BR X9
 	
-	lessThan_iterative:
-
-		ADDI X1, X10, #8 //left = mid + 1, is it 8 or 1??
-		B iterative_loop //goes through the while loop again?
-
-	greaterThan_iterative:
-		
-		SUBI X2, X10, #8 //right = mid - 1
-		B iterative_loop
-
-	end_iterative: 
-
-		LDUR X9, [SP, #0]
-		ADDI SP, SP, #8
-		MOVZ LR, #0, LSL #0
-		ADD LR, LR, X10 //ummmm hmmmm, what do i do to Return -1??
-		BR X9 
+	MOVZ X9, #0, LSL #0 	//left
+	MOVZ X10, #0, LSL #0 	//right
+	MOVZ X11, #0, LSL #0 	//mid 
 	
+	ADD X10, X10, X2	//adding array length to X10
+	MOVZ X12, #8, LSL #0
+	UDIV X10, X10, X12
+	
+	while_iterative: 
+	
+		SUBS X17, X9, X10	//comparing left and right
+		B.GT BadEnd
+		
+		ADD X11, X10, X9		//right + left
+		MOVZ X12, #2, LSL #0	//X12 = 2
+		UDIV X11, X11, X12		//mid = mid / 2
+		
+		PRNT X10
+		PRNT X9
+		PRNT X11
+		
+		LDUR X13, [X11, #0]		//array[mid]
+		SUBS X17, X1, X13		//comparing targetValue and array[mid]
+		B.LT ChangeRight
+		
+		SUBS X17, X1, X13
+		B.GT ChangeLeft
+		
+		B GoodEnd
+		
+	ChangeLeft:
+		MOVZ X9, #0, LSL #0
+		ADDI X9, X11, #1	//left = mid + 1
+		B while_iterative 	//go through while loop again
+		
+	ChangeRight:
+		MOVZ X10, #0, LSL #0
+		SUBI X10, X11, #1	//right = mid - 1
+		B while_iterative	//go through while loop again
+		
+	GoodEnd:
+		MOVZ LR, #0, LSL #0	
+		ADD LR, LR, X11		//adds mid index
+		LDUR X12, [SP, #0]
+		ADDI SP, SP, #8
+		BR X12
+		
+	BadEnd:
+		MOVZ LR, #420, LSL #0	//adds random value to indicate target was not found
+		LDUR X12, [SP, #0]
+		ADDI SP, SP, #8
+		BR X12
+		
+BinarySearchRecursive: //Parameters (X0, X1)
 
 mainEnd:
 
