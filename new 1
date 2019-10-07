@@ -31,7 +31,7 @@ BL SelectionSort
 
 DUMP
 
-MOVZ X1, #78, LSL #0
+MOVZ X1, #90, LSL #0
 MOVZ X2, #200, LSL #0
 BL BinarySearchIterative
 
@@ -217,8 +217,6 @@ BinarySearchIterative: //Parameters(X2 arrayLength, X1 targetValue)
 		
 		B ChangeLeft
 		
-		
-		
 	ChangeLeft:
 		MOVZ X9, #0, LSL #0
 		ADDI X9, X11, #1	//left = mid + 1
@@ -242,7 +240,16 @@ BinarySearchIterative: //Parameters(X2 arrayLength, X1 targetValue)
 		ADDI SP, SP, #8
 		BR X12
 		
-BinarySearchRecursive: //Parameters (X0, X1)
+BinarySearchRecursive: //Parameters (X0 left, X1 right, X2 target)
+
+	SUBI SP, SP, #8 //makes space on the stack
+	STUR LR, [SP, #0] //stores link register
+
+	MOVZ X9, #0, LSL #0 	//left
+	MOVZ X10, #0, LSL #0 	//right
+	MOVZ X11, #0, LSL #0 	//mid
+
+	
 
 mainEnd:
 
