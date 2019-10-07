@@ -31,7 +31,7 @@ BL SelectionSort
 
 DUMP
 
-MOVZ X1, #68, LSL #0
+MOVZ X1, #78, LSL #0
 MOVZ X2, #200, LSL #0
 BL BinarySearchIterative
 
@@ -159,7 +159,7 @@ SelectionSort: //Parameters (X1 arrayLength)
 		
 		MOVZ X1, #0, LSL #0
 		ADD X1, X1, LR 		//minIndex
-		LDUR X2, [SP, #16]  //swapIndex
+		LDUR X2, [SP, #16]  	//swapIndex
 		
 		BL Swap //(X1, X2)
 		
@@ -190,27 +190,34 @@ BinarySearchIterative: //Parameters(X2 arrayLength, X1 targetValue)
 	MOVZ X12, #8, LSL #0
 	UDIV X10, X10, X12
 	
-	while_iterative: 
+	while_iterative:
 	
 		SUBS X17, X9, X10	//comparing left and right
 		B.GT BadEnd
 		
-		ADD X11, X10, X9		//right + left
+		SUB X11, X10, X9	//right - left
 		MOVZ X12, #2, LSL #0	//X12 = 2
-		UDIV X11, X11, X12		//mid = mid / 2
+		UDIV X11, X11, X12	//mid = mid / 2
+		ADD X11, X11, X9	//mid + left
 		
-		PRNT X10
-		PRNT X9
+		MOVZ X14, #0, LSL #0
+		ADD X14, X14, X11	
+		LSL X14, X14, #3	//multiply mid by 8 to get the 8bit representation
+		LDUR X13, [X14, #0]	//array[mid]
+
+		SUBS X17, X1, X13	//comparing targetValue and array[mid]
+
+		PRNT X13
+		PRNT X1
 		PRNT X11
-		
-		LDUR X13, [X11, #0]		//array[mid]
-		SUBS X17, X1, X13		//comparing targetValue and array[mid]
+
+		B.EQ GoodEnd
+
 		B.LT ChangeRight
 		
-		SUBS X17, X1, X13
-		B.GT ChangeLeft
+		B ChangeLeft
 		
-		B GoodEnd
+		
 		
 	ChangeLeft:
 		MOVZ X9, #0, LSL #0
